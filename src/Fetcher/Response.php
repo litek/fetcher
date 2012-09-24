@@ -79,7 +79,7 @@ class Response
    */
   public function json()
   {
-    $isJSON = strpos('application/json', $this->header('content-type')) !== false;
+    $isJSON = strpos($this->header('content-type'), 'application/json') === 0;
     return $isJSON ? json_decode($this->body) : false;
   }
 }

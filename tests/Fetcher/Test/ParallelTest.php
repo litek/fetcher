@@ -37,21 +37,21 @@ class ParallelTest extends \PHPUnit_Framework_TestCase
     $called = 0;
 
     $one = new Client;
-    $one->queue('http://localhost/', function($response, $client, $master) use($one, &$called) {
+    $one->queue('http://localhost/one', function($response, $client, $master) use($one, &$called) {
       $this->assertEquals($one, $client);
       $this->assertInstanceOf('Fetcher\\Response', $response);
       $called++;
     });
 
     $two = new Client;
-    $two->queue('http://localhost/', function($response, $two, $master) use(&$called) {
+    $two->queue('http://localhost/two.1', function($response, $two, $master) use(&$called) {
       $called++;
 
-      $two->queue('http://localhost/', function() use(&$called) {
+      $two->queue('http://localhost/two.2', function() use(&$called) {
         $called++;
       });
 
-      $master->createClient()->queue('http://localhost/', function() use(&$called) {
+      $master->createClient()->queue('http://localhost/master', function() use(&$called) {
         $called++;
       });
     });

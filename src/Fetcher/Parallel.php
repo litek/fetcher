@@ -74,13 +74,13 @@ class Parallel
    *
    * @param Fetcher\Client
    */
-  protected function queue(Client $client)
+  protected function queue(Client $client, $requeue = false)
   {
     $ch   = $client->getHandle();
     $key  = intval($ch);
     $item = $client->shift();
 
-    if (isset($this->queue[$key])) {
+    if ($requeue && isset($this->queue[$key])) {
       curl_multi_remove_handle($this->mh, $ch);
       unset($this->queue[$key]);
     }
@@ -144,7 +144,7 @@ class Parallel
       }
 
       // requeue
-      $this->queue($client);
+      $this->queue($client, true);
     }
   }
 
@@ -158,7 +158,7 @@ class Parallel
     $active = null;
     do {
       $mrc = curl_multi_exec($this->mh, $active);
-    } while($mrc == CURLM_CALL_MULTI_PERFORM);
+    } while($mrc === CURLM_CALL_MULTI_PERFORM);
 
     return $active;
   }
