@@ -1,3 +1,8 @@
 {
-  "name": "litek/fetcher"
+  "name": "litek/fetcher",
+  "autoload": {
+    "psr-0": {
+      "Fetcher": "src/"
+    }
+  }
 }
